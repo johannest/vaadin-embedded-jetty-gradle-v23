@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.vaadin' version '23.3.6'
+}
+
+defaultTasks("clean", "build")
+
+repositories {
+    mavenCentral()
+    maven { setUrl("https://maven.vaadin.com/vaadin-prereleases") }
+    maven { url "https://plugins.gradle.org/m2/" }
+}
+
+dependencies {
+    // Vaadin
+    implementation("com.vaadin:vaadin-core:23.3.6") {
+        afterEvaluate {
+            if (vaadin.productionMode) {
+                exclude(module: "vaadin-dev-server")
+            }
+        }
+    }
+
+    implementation('org.jetbrains:annotations:22.0.0')
+    implementation ('org.eclipse.jetty:jetty-webapp:10.0.14')
+    implementation ('org.eclipse.jetty.websocket:websocket-javax-server:10.0.14')
+    implementation("org.slf4j:slf4j-simple:2.0.4")
+
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+application {
+    mainClassName = "com.vaadin.starter.skeleton.Main"
+}
