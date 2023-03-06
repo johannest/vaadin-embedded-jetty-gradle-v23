@@ -1,8 +1,10 @@
 package com.vaadin.starter.skeleton;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
 import javax.servlet.Servlet;
 import java.io.File;
@@ -39,21 +41,14 @@ public class Main {
         server.setHandler(context);
         server.start();
 
-        // Await for Enter.  ./gradlew run offers no stdin and read() will return immediately with -1
-        if (System.in.read() == -1) {
-            // running from Gradle
-            System.out.println("Running from Gradle, press CTRL+C to shutdown");
-            server.join(); // blocks endlessly
-        } else {
-            stop("Main: Shutting down");
-        }
+        server.join();
     }
 
     // copied from: https://github.com/mvysny/vaadin-boot/tree/main/vaadin-boot
     protected WebAppContext createWebAppContext() throws MalformedURLException {
         final WebAppContext context = new WebAppContext();
         context.setBaseResource(findWebRoot());
-        context.setContextPath("/");
+        context.setContextPath("/analytics");
         context.addServlet(vaadinServletClass, "/*");
         // this will properly scan the classpath for all @WebListeners, including the most important
         // com.vaadin.flow.server.startup.ServletContextListeners.
@@ -61,6 +56,19 @@ public class Main {
         context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*\\.jar|.*/classes/.*");
         context.setConfigurationDiscovered(true);
         context.getServletContext().setExtendedListenerTypes(true);
+
+        ServletHolder holder = new ServletHolder(new HttpServletDispatcher());
+        holder.setInitParameter("javax.ws.rs.Application", AnalyticsRSApplication.class.getName());
+        holder.setInitParameter("resteasy.scan", "true");
+        holder.setInitParameter("resteasy.servlet.mapping.prefix", "/report/download");
+        context.addServlet(holder, "/report/download/*");
+
+        ServletHolder renderHolder = new ServletHolder(new HttpServletDispatcher());
+        renderHolder.setInitParameter("javax.ws.rs.Application", RenderRSApplication.class.getName());
+        renderHolder.setInitParameter("resteasy.scan", "true");
+        renderHolder.setInitParameter("resteasy.servlet.mapping.prefix", "/render");
+        context.addServlet(renderHolder, "/render/*");
+
         return context;
     }
 

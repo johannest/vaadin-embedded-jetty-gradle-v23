@@ -27,6 +27,9 @@ dependencies {
     implementation ('org.eclipse.jetty.websocket:websocket-javax-server:10.0.14')
     implementation("org.slf4j:slf4j-simple:2.0.4")
 
+    implementation 'org.jboss.resteasy:resteasy-jaxrs:3.15.6.Final'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.5'
+
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 }
 
