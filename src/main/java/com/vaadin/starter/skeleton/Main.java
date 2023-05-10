@@ -6,7 +6,7 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -58,13 +58,13 @@ public class Main {
         context.getServletContext().setExtendedListenerTypes(true);
 
         ServletHolder holder = new ServletHolder(new HttpServletDispatcher());
-        holder.setInitParameter("javax.ws.rs.Application", AnalyticsRSApplication.class.getName());
+        holder.setInitParameter("jakarta.ws.rs.Application", AnalyticsRSApplication.class.getName());
         holder.setInitParameter("resteasy.scan", "true");
         holder.setInitParameter("resteasy.servlet.mapping.prefix", "/report/download");
         context.addServlet(holder, "/report/download/*");
 
         ServletHolder renderHolder = new ServletHolder(new HttpServletDispatcher());
-        renderHolder.setInitParameter("javax.ws.rs.Application", RenderRSApplication.class.getName());
+        renderHolder.setInitParameter("jakarta.ws.rs.Application", RenderRSApplication.class.getName());
         renderHolder.setInitParameter("resteasy.scan", "true");
         renderHolder.setInitParameter("resteasy.servlet.mapping.prefix", "/render");
         context.addServlet(renderHolder, "/render/*");
