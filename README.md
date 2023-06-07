@@ -37,3 +37,10 @@ Run the following command in this repo:
 ```
 
 Now you can open the [http://localhost:8080](http://localhost:8080) with your browser.
+
+## Running with Docker
+* Do the Gradle build, then:
+```bash
+docker build . -t v24docker:latest
+docker run -p 8180:8080 v24docker:latest
+```

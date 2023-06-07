@@ -1,7 +1,8 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.vaadin' version '24.0.5'
+    id 'com.vaadin' version '24.1.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 defaultTasks("clean", "build")
@@ -14,7 +15,7 @@ repositories {
 
 dependencies {
     // Vaadin
-    implementation("com.vaadin:vaadin-core:24.0.5") {
+    implementation("com.vaadin:vaadin-core:24.1.0") {
         afterEvaluate {
             if (vaadin.productionMode) {
                 exclude(module: "vaadin-dev-server")
@@ -30,7 +31,7 @@ dependencies {
     implementation 'org.jboss.resteasy:resteasy-client:6.2.3.Final'
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
 
-    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:5.0.0'
 }
 
 java {
@@ -39,14 +40,21 @@ java {
 }
 
 application {
-    mainClassName = "com.vaadin.starter.skeleton.Main"
+    mainClass.set("com.vaadin.starter.skeleton.Main")
 }
 
 
 jar {
     manifest {
         attributes(
-                "Main-Class": mainClassName,
+                "Main-Class": application.mainClass.get(),
                 "Class-Path": configurations.runtimeClasspath.collect { it.getName() }.join(' '))
+        duplicatesStrategy = DuplicatesStrategy.INHERIT
     }
+}
+shadow {
+    mainClassName = application.mainClass.get()
+}
+shadowJar {
+    mergeServiceFiles()
 }
