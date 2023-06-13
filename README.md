@@ -38,6 +38,12 @@ Run the following command in this repo:
 
 Now you can open the [http://localhost:8080](http://localhost:8080) with your browser.
 
+## Running with `java -jar`
+* Do the Gradle build, then:
+```bash
+java -jar build/libs/vaadin-embedded-jetty-gradle-v23-all.jar
+```
+
 ## Running with Docker
 * Do the Gradle build, then:
 ```bash
